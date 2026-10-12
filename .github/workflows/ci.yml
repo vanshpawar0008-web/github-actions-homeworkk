@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build, push and scan
+        id: build
+        uses: ./.github/actions/build-and-scan
+        with:
+          image_name: github-actions-homework
+          tag: ${{ github.sha }}
+
+      - name: Print image URI
+        run: |
+          echo "Image URI: ${{ steps.build.outputs.image_uri }}"
