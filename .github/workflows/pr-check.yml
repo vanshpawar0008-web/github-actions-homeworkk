@@ -1,0 +1,10 @@
+name: PR Infrastructure Check
+
+on:
+  pull_request:
+
+jobs:
+  infrastructure-check:
+    uses: ./.github/workflows/infra-check.yml
+    with:
+      working_dir: infra
